@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的個人網站(持續建設中)</title>
+</head>
+<body>
+    <h1>歡迎來到我的個人網站</h1>
+    <p>這個網站正在持續建設中，敬請期待！</p>
+    
+    <h2>社交媒體連結：</h2>
+    <ul>
+        <li><a href="https://www.instagram.com/rex1206/">Instagram</a></li>
+        <li><a href="https://www.youtube.com/@Dr.fox66">YouTube</a></li>
+    </ul>
+    <div id="displayText"></div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+    <script>
+        // 解密
+        function decryptText(encryptedText, secretKey) {
+            var decrypted = CryptoJS.AES.decrypt(encryptedText, secretKey);
+            return decrypted.toString(CryptoJS.enc.Utf8);
+        }
+        
+        function handleInput(rec) {
+            // 進行SHA-256加密
+            var sha256 = new TextEncoder().encode(rec);
+            crypto.subtle.digest('SHA-256', sha256).then(function(hash) {
+                var hashArray = Array.from(new Uint8Array(hash));
+                var hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+                var hashHex_1 = hashHex.substring(0, 58); // 前56個字元
+                var hashHex_2 = hashHex.substring(58);    // 剩餘的字元
+                // 比對加密後的值是否等於目標值
+                if (hashHex_1 === '74d80c54e4fa458ef03bbde9615c12981d967ad60811032b128077e3bf') {
+                    var decryptedText = decryptText('U2FsdGVkX1+TIrrsPJBEu0+aShIBVCyYI4+OUAafPHrB5KU6Fyoc61NKdYHNewtFIcWdoBEeVQ7TSEGzQwF2ABRHp0OSiRGEoW+6I38wl+gfGh3ZxJDvA2yEO9vi5yijXuElarIAYWUTos+J3ELVvgowXWd5sMp88n8kqHLG1hg=', hashHex_2);
+                    window.location.href = decryptedText;
+                }
+            });
+        }
+        
+        function Listener(e) {
+            rec += String.fromCharCode(e.keyCode);
+            if (rec.length > 6) {
+                rec = rec.substr(rec.length - 6);
+            }
+            handleInput(rec)
+        }
+
+        var rec = ''
+        var body = document.body;
+        body.addEventListener('keydown', Listener, false);
+    </script>
+</body>
+</html>
